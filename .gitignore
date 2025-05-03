@@ -1,0 +1,10 @@
+*.bit
+*.txt
+*.log
+*.json
+*.blif
+*.out
+*.svg
+*.dot
+*.pdf
+*out.config
