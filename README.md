@@ -2,7 +2,7 @@
 
 ## Configuration of the test setup
 
-1. A cart is quipped with four mecanum (Ilon) wheels each can be driven independently using NEMA17 stepper motor (1.8 deg/step) and 1:30 reduction gear. Basic frequency of the stepper is 1000 Hz.
+1. A cart is equipped with four mecanum (Ilon) wheels each can be driven independently using NEMA17 stepper motor (1.8 deg/step) and 1:30 reduction gear. Basic frequency of the stepper is 1000 Hz.
 
 2. Each stepper motor is powered by DRV8825 IC driver which accepts **EN#**, **DIR** and **STEP** signals. All four DRV8825 are configured to divide step by 16 (MODE2 set to 1). Hence, a full circle wheel rotation takes 96000 steps (200 * 30 * 16).
 
@@ -39,3 +39,9 @@ The following KEY inputs trigger commands:
 
  - key[0] - Move forward one full circle 
  - key[1] - Emergency STOP
+
+## Mecanum Wheel Kinematics
+
+![Four wheeled platform kinematics](images/Mecanum_wheel_control_principle.svg)
+![Four wheeled platform kinematics equation](images/Mecanum_kinematics.png)
+![Four wheeled platform kinematics inference](images/Mecanum_kinematics_inference.png)
