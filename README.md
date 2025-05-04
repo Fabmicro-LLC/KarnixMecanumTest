@@ -25,8 +25,17 @@
 
 IR decoder supports NEC based TV remote controls (Samsung TV and others). Those have 32 bit command word sent from control to device on every key press. The following commands are currently recognized:
 
- - 32'h9F600707 'Up' - move forward 1/8
- - 32'h9E610707 'Down' - move backward 1/8
- - 32'h9A650707 'Left' - strafe left 1/8
- - 32'h9D620707 'Right' - strafe right 1/8
+ - 32'hFD020707 'Power OFF 1', 32'h19E60707 'Power OFF 2', 32'h97680707 'Enter' - Emergency STOP
+ - 32'h9F600707 'Up' - move forward full circle 
+ - 32'h9E610707 'Down' - move backward full circle 
+ - 32'h9A650707 'Left' - strafe left full circle 
+ - 32'h9D620707 'Right' - strafe right full circle 
+ - 32'hD22D0707 'Exit' - Rotate Clockwise 
+ - 32'h86790707 'Home' - Rotate Counter-Clockwise 
 
+## GPIO/Key inputs
+
+The following KEY inputs trigger commands:
+
+ - key[0] - Move forward one full circle 
+ - key[1] - Emergency STOP

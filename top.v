@@ -4,6 +4,10 @@ module top (
 	output	wire [3:0]	led,
 	inout	wire [15:0]	gpio,
 );
+	localparam	BASE_FREQ = 25000000;
+	localparam	MOTOR_FREQ = 16000;
+	localparam	MOTOR_STEPS = 96000;
+
 	wire		rst;
 
 	wire		motor_fl_ready;
@@ -178,99 +182,154 @@ module top (
 		end else begin
 			if (key[0]) begin // Move forward 90 deg 
 				motor_fl_task(
-					25000000 / 2 / 16000,	// 16kHz
-					'd24000,		// 90 * 16 * 30 = rotate 90 deg
+					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_fr_task(
-					25000000 / 2 / 16000,	// 16kHz
-					'd24000,		// 90 * 16 * 30 = rotate 90 deg
+					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_bl_task(
-					25000000 / 2 / 16000,	// 16kHz
-					'd24000,		// 90 * 16 * 30 = rotate 90 deg
+					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_br_task(
-					25000000 / 2 / 16000,	// 16kHz
-					'd24000,		// 90 * 16 * 30 = rotate 90 deg
+					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 			end
 
+			if (key[1]) begin // STOP
+				motor_fl_valid <= 'b0;
+				motor_fr_valid <= 'b0;
+				motor_bl_valid <= 'b0;
+				motor_br_valid <= 'b0;
+			end
+
+ 
 			if (ir_ready) begin
+				if (ir_command == 32'hFD020707 ||
+				    ir_command == 32'h19E60707 ||
+				    ir_command == 32'h97680707) begin // 'Power' - Emergency STOP
+					motor_fl_valid <= 'b0;
+					motor_fr_valid <= 'b0;
+					motor_bl_valid <= 'b0;
+					motor_br_valid <= 'b0;
+				end
 
 				if (ir_command == 32'h9F600707) begin // 'Up' - move forward 1/8
 					motor_fl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
+						'd1);
 					motor_fr_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
+						'd1);
 					motor_bl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
+						'd1);
 					motor_br_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
+						'd1);
 				end
 
 				if (ir_command == 32'h9E610707) begin // 'Down' - move backward 1/8
 					motor_fl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+					motor_fr_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+					motor_bl_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+					motor_br_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 180 * 16 * 30 = rotate 180 deg
+						'd0);
+				end
+
+				if (ir_command == 32'h9A650707) begin // 'Left' - strafe left
+					motor_fl_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_fr_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd1);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
 					motor_bl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_br_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+				end
+
+				if (ir_command == 32'h9D620707) begin // 'Right' - strafe right
+					motor_fl_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+					motor_fr_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd1);
+					motor_bl_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
+					motor_br_task(
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 				end
 
-				if (ir_command == 32'h9A650707) begin // 'Left' - strafe left 1/8
+				if (ir_command == 32'hD22D0707) begin // 'Exit' - Rotate Clockwise 
 					motor_fl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_fr_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd1);
 					motor_bl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_br_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd1);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
 				end
 
-				if (ir_command == 32'h9D620707) begin // 'Right' - strafe right 1/8
+
+				if (ir_command == 32'h86790707) begin // 'Home' - Rotate Counter-Clockwise 
 					motor_fl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_fr_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd1);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd0);
 					motor_bl_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_br_task(
-						25000000 / 2 / 16000,	// 16kHz
-						'd12000,		// 45 * 16 * 30 = rotate 45 deg
-						'd0);
+						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
+						'd1);
 				end
 			end
 
