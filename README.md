@@ -42,6 +42,6 @@ The following KEY inputs trigger commands:
 
 ## Mecanum Wheel Kinematics
 
-![Four wheeled platform kinematics](images/Mecanum_wheel_control_principle.svg)
+![Four wheeled platform kinematics](images/Mecanum_wheel_control_principle.png)
 ![Four wheeled platform kinematics equation](images/Mecanum_kinematics.png)
 ![Four wheeled platform kinematics inference](images/Mecanum_kinematics_inference.png)
