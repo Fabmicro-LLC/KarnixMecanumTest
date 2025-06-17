@@ -40,6 +40,8 @@ module top (
 
 	wire		motor_all_en;
 
+	reg [31:0]	motor_freq_top;
+
 	reg [31:0]	ir_command;
 	wire		ir_ready;
 	wire		ir_input;
@@ -168,6 +170,8 @@ module top (
 
 	always@(posedge clk25 or posedge rst) begin
 		if(rst) begin
+			motor_freq_top <= BASE_FREQ / 2 / MOTOR_FREQ;
+
 			motor_fl_task('d0, 'd0, 'd0);
 			motor_fl_valid <= 'd0;
 
@@ -182,19 +186,19 @@ module top (
 		end else begin
 			if (key[0]) begin // Move forward 90 deg 
 				motor_fl_task(
-					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					motor_freq_top,	// 16kHz
 					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_fr_task(
-					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					motor_freq_top,	// 16kHz
 					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_bl_task(
-					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					motor_freq_top,	// 16kHz
 					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 				motor_br_task(
-					BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+					motor_freq_top,	// 16kHz
 					MOTOR_STEPS,		// 90 * 16 * 30 = rotate 90 deg
 					'd0);
 			end
@@ -219,95 +223,95 @@ module top (
 
 				if (ir_command == 32'h9F600707) begin // 'Up' - move forward 1/8
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
 						'd1);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
 						'd1);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
 						'd1);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 45 deg
 						'd1);
 				end
 
 				if (ir_command == 32'h9E610707) begin // 'Down' - move backward 1/8
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 180 * 16 * 30 = rotate 180 deg
 						'd0);
 				end
 
 				if (ir_command == 32'h9A650707) begin // 'Left' - strafe left
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 				end
 
 				if (ir_command == 32'h9D620707) begin // 'Right' - strafe right
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 				end
 
 				if (ir_command == 32'hD22D0707) begin // 'Exit' - Rotate Clockwise 
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 				end
@@ -315,22 +319,59 @@ module top (
 
 				if (ir_command == 32'h86790707) begin // 'Home' - Rotate Counter-Clockwise 
 					motor_fl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 					motor_fr_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_bl_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd0);
 					motor_br_task(
-						BASE_FREQ / 2 / MOTOR_FREQ,	// 16kHz
+						motor_freq_top,	// 16kHz
 						MOTOR_STEPS,		// 100 * 16 * 30 = rotate 180 deg
 						'd1);
 				end
+
+				if (ir_command == 32'hF8070707) // 'Volume+' - Increase freq (decrease top)
+					motor_freq_top <= motor_freq_top - 'd10; 
+
+				if (ir_command == 32'hF40B0707) // 'Volume-' - Decrease freq (increase top)
+					motor_freq_top <= motor_freq_top + 'd10; 
+
+				if (ir_command == 32'h0xEE110707) // '0'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ); 
+
+				if (ir_command == 32'hFB040707) // '1'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 1000); 
+
+				if (ir_command == 32'hFA050707) // '2'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 2000); 
+
+				if (ir_command == 32'hF9060707) // '3'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 3000); 
+
+				if (ir_command == 32'hF7080707) // '4'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 4000); 
+
+				if (ir_command == 32'hF6090707) // '5'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 5000); 
+
+				if (ir_command == 32'hF50A0707) // '6'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 6000); 
+
+				if (ir_command == 32'hF30C0707) // '7'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 7000); 
+
+				if (ir_command == 32'hF20D0707) // '8'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 8000); 
+
+				if (ir_command == 32'hF10E0707) // '9'
+					motor_freq_top <= BASE_FREQ / 2 / (MOTOR_FREQ - 9000); 
+
 			end
 
 			if (motor_fl_ready)
